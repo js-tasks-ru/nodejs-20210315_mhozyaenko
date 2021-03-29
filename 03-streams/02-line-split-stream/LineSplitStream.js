@@ -9,8 +9,7 @@ class LineSplitStream extends stream.Transform {
 
   _transform(chunk, encoding, callback) {
     const lines = `${this.substr}${chunk.toString()}`.split(os.EOL);
-    this.substr = lines[lines.length - 1];
-    lines.pop();
+    this.substr = lines.pop();
     lines && lines.map((line) => this.push(line));
     callback();
   }

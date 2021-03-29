@@ -21,6 +21,8 @@ server.on('request', (req, res) => {
 
       const readStream = createReadStream(filepath);
 
+      readStream.pipe(res);
+
       readStream.on('error', (error) => {
         if (error.code === 'ENOENT') {
           res.statusCode = 404;
@@ -31,10 +33,9 @@ server.on('request', (req, res) => {
         }
       });
 
-      readStream.on('data', (data) => {
-        res.write(data);
-        res.statusCode = 200;
-        res.end();
+      res.on('close', () => {
+        if (res.finished) return;
+        readStream.destroy();
       });
 
       break;
