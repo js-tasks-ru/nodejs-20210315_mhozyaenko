@@ -1,6 +1,7 @@
 const url = require('url');
 const http = require('http');
 const path = require('path');
+const {unlink} = require('fs');
 
 const server = new http.Server();
 
@@ -11,6 +12,24 @@ server.on('request', (req, res) => {
 
   switch (req.method) {
     case 'DELETE':
+
+      if (pathname.includes('/') || pathname.includes('..')) {
+        res.statusCode = 400;
+        res.end('Вложенные папки не поддерживаются');
+      }
+
+      unlink(filepath, (error) => {
+        if (error && error.code === 'ENOENT') {
+          res.statusCode = 404;
+          res.end('Файл не найден');
+        }
+        if (error) {
+          res.statusCode = 500;
+          res.end('Что-то пошло не так...');
+        }
+        res.statusCode = 200;
+        res.end();
+      });
 
       break;
 
