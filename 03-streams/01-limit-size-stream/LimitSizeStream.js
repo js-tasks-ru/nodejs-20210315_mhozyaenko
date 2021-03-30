@@ -9,7 +9,7 @@ class LimitSizeStream extends stream.Transform {
   }
 
   _transform(chunk, encoding, callback) {
-    let error; let data;
+    let error = null; let data = null;
     this.total += chunk.length;
     if (this.total <= this.options.limit) {
       data = chunk;
