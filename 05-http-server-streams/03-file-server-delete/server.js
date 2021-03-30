@@ -23,12 +23,14 @@ server.on('request', (req, res) => {
           res.statusCode = 404;
           res.end('Файл не найден');
         }
-        if (error) {
+        if (error && error.code !== 'ENOENT') {
           res.statusCode = 500;
           res.end('Что-то пошло не так...');
         }
-        res.statusCode = 200;
-        res.end();
+        if (!error) {
+          res.statusCode = 200;
+          res.end();
+        }
       });
 
       break;
